@@ -1,0 +1,104 @@
+---
+title: "Statistical Inference Course Project - Part 1"
+author: Carolina San Martín
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+if(!require(ggplot2)){install.packages('ggplot2')}; library(ggplot2)
+
+```
+
+
+# Part 1: Simulation exercise
+
+## Overview
+This is the first of two-parts final project of the Statistical Inference Course from Coursera's Data Science by Johns Hopkins University. This first part aims to investigate the exponential distribution in R and compare it with the Central Limit Theorem: given that lambda = 0.2 for all of the simulations, this part illustrates the properties of the distribution of the mean of 40 exponentials over a thousand simulations.
+
+I made a pdf report to answer the questions presented in the project rubric using ‘knitr’. 
+
+
+
+## Simulations
+
+First, it is needed setting parameters to define the distribution: 
+
+```{r setting}
+# Set the seed of R's random number generator to start simulation
+set.seed(10000)
+
+# Lambda provided
+lambda <- 0.2
+
+# Number of exponentials
+n <- 40
+
+# Number of simulations
+n_simulation <- 1000
+
+```
+
+Then, we simulate the 40 exponentials and estimate the mean of the simulated data.
+
+```{r simulation}
+# Simulate the exponentials
+mns <- NULL
+for (i in 1:n_simulation) mns <- c(mns, mean(rexp(n,lambda)))
+
+```
+
+
+## 1. Sample mean and theoretical mean of the distribution.
+
+Calculate and compare the sample mean to the theoretical mean. The mean of the exponential distribution is equal to $1/\lambda$. In our case, $\lambda$ is equal to 0.2. Thus, the actual mean is not as far of value from the theoretical mean, because values are `r round(mean(mns),2)` and `r `1/lambda`, respectively.
+
+
+```{r}
+# Sample mean
+mean(mns)
+
+# Theoric mean of exponential distribution
+1/lambda
+
+# Creating the histogram
+hist(mns, 
+     main="Theoretical versus Sample mean", 
+     breaks=30)
+abline(v = mean(mns), lwd="2", col="blue")
+
+```
+
+
+## 2. Variance of the distribution.
+
+The following code chunk relates the theoretrical standard deviation to the standard deviation value calculated from the simulations.
+
+```{r sd}
+(1/lambda)/sqrt(n)
+sd(mns)
+```
+
+Now, the same for variance
+
+```{r variance}
+((1/lambda)/sqrt(n))^2
+sd(mns)^2
+```
+
+
+## 3. Distribution.
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r distribution}
+
+#Show that the distribution is approximately normal.
+#need that prob = TRUE to turn into density
+hist(mns, prob = TRUE, main = "Mean Distribution", breaks = 50)
+lines(density(mns), lwd = 3, col = "blue")
+
+```
+
+This histogram has been adapted to show how this simulation tracks normality. This related to the CLT and how more samples will make this data appear more normal.
